@@ -19,12 +19,9 @@ public class Tasks : MonoBehaviour
 
     public async Task FirstTusk(CancellationToken cancellationToken)
     {
-        await Task.Delay(1000);
-        _cancellationTokenSource.Cancel();
-        if (cancellationToken.IsCancellationRequested)
-        {
+        await Task.Delay(1000,cancellationToken);
             Debug.Log("First task completed ");
-        }
+        
     }
     public async Task SecondTask(CancellationToken cancellationToken)
     {
@@ -32,11 +29,11 @@ public class Tasks : MonoBehaviour
         {
             await Task.Yield();
         }
-        _cancellationTokenSource.Cancel();
         if (cancellationToken.IsCancellationRequested)
         {
-            Debug.Log("Second task completed");
+            return;
         }
+        Debug.Log("Second task completed");
     }
 
     public async  Task<bool> WhatTaskFasterAsync(CancellationToken ct, Task task1, Task task2)
@@ -45,11 +42,13 @@ public class Tasks : MonoBehaviour
         if (firstCompleted == task1)
         {
             Debug.Log("First task done first");
+            _cancellationTokenSource.Cancel();
             return true;
         }
         else
         {
             Debug.Log("Second task done first");
+            _cancellationTokenSource.Cancel();
             return false;
         }    
     }
